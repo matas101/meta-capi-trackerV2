@@ -1,10 +1,9 @@
 {
-  "name": "matas-capi-linkpage",
+  "name": "matas-capi-linkpage-slugs",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "engines": { "node": ">=18" },
+  "scripts": { "start": "node server.js" },
   "dependencies": {
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",
