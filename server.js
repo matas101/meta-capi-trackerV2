@@ -1,12 +1,10 @@
-// server.js
-// Node 18+. Install: npm i express dotenv compression helmet uuid node-fetch@3
-import express from "express";
-import compression from "compression";
-import helmet from "helmet";
-import { v4 as uuidv4 } from "uuid";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-dotenv.config();
+// server.js — CommonJS Variante
+require("dotenv").config();
+const express = require("express");
+const compression = require("compression");
+const helmet = require("helmet");
+const { v4: uuidv4 } = require("uuid");
+const fetch = require("node-fetch");
 
 const app = express();
 app.use(express.json());
@@ -20,11 +18,7 @@ const PIXEL_ID = process.env.PIXEL_ID;          // z.B. 123456789012345
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;  // Meta System User Token
 const PORT = process.env.PORT || 3000;
 
-// ==== Simple in-memory catalog (Slugs) ====
-/**
- * Neue Einträge einfach ergänzen:
- * slug: { artist, title, links: { spotify, apple, ytm, amazon } }
- */
+// ==== Slug-Katalog ====
 const CATALOG = {
   "naehe": {
     artist: "matas",
@@ -55,7 +49,38 @@ const CATALOG = {
       ytm:     "https://music.youtube.com/watch?v=lYl1-Nbi0xE",
       amazon:  "https://music.amazon.com/albums/B0FJFHMDGV?trackAsin=B0FJFHXXR3"
     }
-
+  },
+  "alleine": {
+    artist: "matas",
+    title: "Alleine",
+    links: {
+      spotify: "https://open.spotify.com/track/7iyAlH0S5YX7RHHKzwCKGk?si=acf0f3157558452b",
+      apple:   "https://music.apple.com/us/album/alleine/1828454070?i=1828454071&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=P2NcblmpFi8",
+      amazon:  "https://music.amazon.com/albums/B0FJDRJ7PM?trackAsin=B0FJD3TVQM"
+    }
+  },
+  "hoffentlich": {
+    artist: "matas",
+    title: "Hoffentlich",
+    links: {
+      spotify: "https://open.spotify.com/track/75kp8a4C9S4usmECfTKWFS?si=165d52755c1c4752",
+      apple:   "https://music.apple.com/us/album/hoffentlich/1828299731?i=1828299735&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=3Qy1dQ2apdk",
+      amazon:  "https://music.amazon.com/albums/B0FJFHMDGV?trackAsin=B0FJFHC5ZS"
+    }
+  },
+  "meinherz": {
+    artist: "matas",
+    title: "Mein Herz",
+    links: {
+      spotify: "https://open.spotify.com/track/5DUtczvALngc17i1JGzdK6?si=af8aa52b41414516",
+      apple:   "https://music.apple.com/us/album/mein-herz/1828299731?i=1828299740&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=LdWGgGp4JVo",
+      amazon:  "https://music.amazon.com/albums/B0FJFHMDGV?trackAsin=B0FJFFBC69"
+    }
+  }
+};
 
 // ==== Helpers ====
 const FB_CAPI_URL = (pixelId) => `https://graph.facebook.com/v19.0/${pixelId}/events`;
@@ -96,7 +121,8 @@ async function sendCapi(pixelId, accessToken, payload) {
   const url = new URL(FB_CAPI_URL(pixelId));
   url.searchParams.set("access_token", accessToken);
   const res = await fetch(url.toString(), {
-    method: "POST", headers: { "Content-Type": "application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
   if (!res.ok) {
@@ -193,7 +219,7 @@ if (navigator.sendBeacon) {
   fetch('/capi/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(visitPayload)});
 }
 
-// Click: Browser+Server dedupe, danach redirect
+// Click: Browser+Server dedupe, dann redirect
 document.querySelectorAll('a.btn').forEach(a=>{
   a.addEventListener('click', function(e){
     e.preventDefault();
@@ -230,13 +256,12 @@ document.querySelectorAll('a.btn').forEach(a=>{
 
 // ==== Routes ====
 
-// Slug-Seite: /:slug   (+ optionale ?utm_* & ?test_event_code)
+// Slug-Seite
 app.get("/:slug", (req, res, next) => {
   const slug = (req.params.slug || "").toLowerCase();
-  if (!CATALOG[slug]) return next(); // 404 -> später
-
   const item = CATALOG[slug];
-  // UTM an die Ziel-Links hängen
+  if (!item) return next();
+
   const linksWithUtm = {
     spotify: appendUtms(item.links.spotify, req.query),
     apple:   appendUtms(item.links.apple, req.query),
@@ -249,7 +274,8 @@ app.get("/:slug", (req, res, next) => {
     title: item.title,
     links: linksWithUtm,
     pixelId: PIXEL_ID
-  }).replaceAll(JSON.stringify("matas"), JSON.stringify(item.artist))
+  })
+    .replaceAll(JSON.stringify("matas"), JSON.stringify(item.artist))
     .replaceAll(JSON.stringify("Mein Herz"), JSON.stringify(item.title));
 
   res.status(200).send(html);
@@ -307,9 +333,9 @@ app.post("/capi/click", async (req, res) => {
   } catch (e) { console.error(e); res.sendStatus(500); }
 });
 
-// Root -> kurze Info
+// Root
 app.get("/", (req, res) => {
-  res.type("text/plain").send("OK – benutze /:slug (z. B. /meinherz).");
+  res.type("text/plain").send("OK – benutze /:slug (z. B. /naehe, /wdgm, /5grad, /alleine, /hoffentlich, /meinherz).");
 });
 
 // 404
