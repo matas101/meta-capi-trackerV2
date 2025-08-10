@@ -26,28 +26,36 @@ const PORT = process.env.PORT || 3000;
  * slug: { artist, title, links: { spotify, apple, ytm, amazon } }
  */
 const CATALOG = {
-  "meinherz": {
-    artist: "matas",
-    title: "Mein Herz",
-    links: {
-      spotify: "https://open.spotify.com/track/XXXXX",
-      apple:   "https://music.apple.com/XXXXX",
-      ytm:     "https://music.youtube.com/XXXXX",
-      amazon:  "https://music.amazon.de/XXXXX"
-    }
-  },
   "naehe": {
     artist: "matas",
     title: "Nähe",
     links: {
-      spotify: "https://open.spotify.com/track/YYYYY",
-      apple:   "https://music.apple.com/YYYYY",
-      ytm:     "https://music.youtube.com/YYYYY",
-      amazon:  "https://music.amazon.de/YYYYY"
+      spotify: "https://open.spotify.com/track/2CbqQ1MkGGyfuwc6aUg4d1?si=d68112a0b89442df",
+      apple:   "https://music.apple.com/us/album/n%C3%A4he/1828299731?i=1828299736&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=n-kTyVWo-Sk",
+      amazon:  "https://music.amazon.com/albums/B0FJFHMDGV?trackAsin=B0FJFG84V7"
     }
-  }
-  // weitere Slugs hier rein
-};
+  },
+  "wdgm": {
+    artist: "matas",
+    title: "Was du grade machst",
+    links: {
+      spotify: "https://open.spotify.com/track/63M09x0U7OswUZoZRttyHe?si=4f860a09be2648de",
+      apple:   "https://music.apple.com/us/album/was-du-grade-machst/1828444714?i=1828444715&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=i8MgGzS1XqU",
+      amazon:  "https://music.amazon.com/albums/B0FJCLB9MX?trackAsin=B0FJCZKPG4"
+    }
+  },
+  "5grad": {
+    artist: "matas",
+    title: "5 Grad",
+    links: {
+      spotify: "https://open.spotify.com/track/0RiOthkDBGIcJYXRgMAvhp?si=408a0727e32148c4",
+      apple:   "https://music.apple.com/us/album/5-grad/1828299731?i=1828299732&app=itunes",
+      ytm:     "https://music.youtube.com/watch?v=lYl1-Nbi0xE",
+      amazon:  "https://music.amazon.com/albums/B0FJFHMDGV?trackAsin=B0FJFHXXR3"
+    }
+
 
 // ==== Helpers ====
 const FB_CAPI_URL = (pixelId) => `https://graph.facebook.com/v19.0/${pixelId}/events`;
