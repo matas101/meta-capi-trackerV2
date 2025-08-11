@@ -346,6 +346,7 @@ app.post("/capi/visit", async (req, res) => {
       custom_data: { artist_name, title, music_service: "landing" },
       test_event_code
     });
+    console.log("📤 Sende CAPI Event (Visit):", JSON.stringify(payload, null, 2));
     sendCapi(PIXEL_ID, ACCESS_TOKEN, payload).catch(()=>{});
     res.sendStatus(204);
   } catch (e) { console.error(e); res.sendStatus(500); }
@@ -382,6 +383,7 @@ app.post("/capi/click", async (req, res) => {
       custom_data: { artist_name, title, music_service, value: 0, currency: "EUR" },
       test_event_code
     });
+    console.log("📤 Sende CAPI Event (Click):", JSON.stringify(payload, null, 2));
     sendCapi(PIXEL_ID, ACCESS_TOKEN, payload).catch(()=>{});
     res.sendStatus(204);
   } catch (e) { console.error(e); res.sendStatus(500); }
